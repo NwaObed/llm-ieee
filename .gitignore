@@ -1,0 +1,6 @@
+__pycache__
+.vscode
+hallucination-detect/
+junk/
+llm_env
+.env
