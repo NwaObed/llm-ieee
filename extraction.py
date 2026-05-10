@@ -55,9 +55,8 @@ def parse_page(url):
 
 if __name__ == "__main__":
     source_link = "https://www.gov.uk/hmrc-internal-manuals/self-assessment-manual"
+    
     links = get_links(source_link)
-    print("=========================index=======================")
-    print(links[0])
 
     page_data = parse_page(links[0]) # for proof of concept, we are keeping it to 1 link for now. We can loop through all the links later.
 
