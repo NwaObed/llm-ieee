@@ -1,18 +1,10 @@
 from embed import build_embedded_chunks
 
 import psycopg
-import os
-from dotenv import load_dotenv
+from config import db_cred
 
-load_dotenv()
 
-conn = psycopg.connect(
-    "host=" + os.getenv("HOST") + " " \
-    "port=" + os.getenv("PORT") + " " \
-    "dbname=" + os.getenv("DBNAME") + " " \
-    "user=" + os.getenv("DB_USER") + " " \
-    "password=" + os.getenv("DB_PASSWORD")
-)
+conn = psycopg.connect(db_cred)
 
 cur = conn.cursor()
 

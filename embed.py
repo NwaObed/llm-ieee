@@ -2,6 +2,7 @@ import json
 from sentence_transformers import SentenceTransformer
 from chunks import build_chunks
 
+
 model = SentenceTransformer("BAAI/bge-base-en")
 
 def embed(text):

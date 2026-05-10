@@ -2,10 +2,14 @@ from embed import model
 from hallucination import detect_hallucinations, format_hallucination_report
 import psycopg
 import requests
+from config import db_cred
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
-DB_DSN = "host=localhost port=5435 dbname=sa_manual_db user=postgres password=postgres"
-OLLAMA_URL = "http://localhost:11434/api/generate"
+OLLAMA_URL = os.getenv("OLLAMA_URL")
 OLLAMA_MODEL = "llama3"
 TOP_K = 5
 
@@ -13,7 +17,7 @@ query = "what is VAT?"
 
 query_embedding = model.encode(query)  # or API call
 
-with psycopg.connect(DB_DSN) as conn:
+with psycopg.connect(db_cred) as conn:
     with conn.cursor() as cur:
         cur.execute("""
         SELECT chunk_text, section_code, title, url
