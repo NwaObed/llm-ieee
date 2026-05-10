@@ -1,4 +1,4 @@
-from extraction import parse_page, get_links
+from retrive.extraction import parse_page, get_links
 import json
 
 source_link = "https://www.gov.uk/hmrc-internal-manuals/self-assessment-manual"

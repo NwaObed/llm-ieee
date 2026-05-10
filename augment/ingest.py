@@ -1,4 +1,4 @@
-from embed import build_embedded_chunks
+from augment.embed import build_embedded_chunks
 
 import psycopg
 from config import db_cred

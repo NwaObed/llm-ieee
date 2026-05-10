@@ -1,6 +1,6 @@
 import json
 from sentence_transformers import SentenceTransformer
-from chunks import build_chunks
+from augment.chunks import build_chunks
 
 
 model = SentenceTransformer("BAAI/bge-base-en")

@@ -1,5 +1,5 @@
-from embed import model
-from hallucination import detect_hallucinations, format_hallucination_report
+from augment.embed import model
+from junk.hallucination import detect_hallucinations, format_hallucination_report
 import psycopg
 import requests
 from config import db_cred
