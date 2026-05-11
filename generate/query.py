@@ -1,5 +1,7 @@
-from augment.embed import model
-from junk.hallucination import detect_hallucinations, format_hallucination_report
+import os
+import sys
+
+from augment.embed import embed
 import psycopg
 import requests
 from config import db_cred
@@ -15,7 +17,7 @@ TOP_K = 5
 
 query = "what is VAT?"
 
-query_embedding = model.encode(query)  # or API call
+query_embedding = embed(query)  # or API call
 
 with psycopg.connect(db_cred) as conn:
     with conn.cursor() as cur:
@@ -24,7 +26,7 @@ with psycopg.connect(db_cred) as conn:
         FROM manual_chunks
         ORDER BY embedding <-> %s::vector
         LIMIT %s;
-        """, (query_embedding.tolist(), TOP_K))
+        """, (query_embedding, TOP_K))
 
         results = cur.fetchall()
 
@@ -68,7 +70,6 @@ Question: {query}
 
 response = requests.post(
     OLLAMA_URL, # local machine
-    # "http://ollama:11434/api/generate", # docker service
     json={
         "model": OLLAMA_MODEL,
         "prompt": prompt,
