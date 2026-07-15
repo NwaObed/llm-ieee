@@ -4,7 +4,7 @@ import math
 import statistics
 from dataclasses import dataclass, asdict
 from typing import Any, Dict, List, Optional, Callable
-from generate.rag_model import split_claims, tokenize, docs_to_context, call_ollama
+from generate.rag_model import split_claims, tokenize, docs_to_context, call_ollama, safe_json_parse
 
 
 # ============================================================

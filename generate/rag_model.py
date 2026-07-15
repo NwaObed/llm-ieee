@@ -15,7 +15,7 @@ STOPWORDS = {
 
 def call_ollama(
     prompt: str,
-    model: str = "mistral",
+    model: str = "llama3",
     temperature: float = 0.0,
     ollama_url: str = "http://localhost:11434/api/generate",
     timeout: int = 120,

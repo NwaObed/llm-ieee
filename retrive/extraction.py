@@ -45,12 +45,19 @@ def parse_page(url):
     
     content_blocks = extract_content(soup)
 
-    return {
+    manual_page = {
         "url": url,
         "title": title,
         "section_code": section_code,
         "content_blocks": content_blocks
     }
+
+    content = manual_page["content_blocks"]
+
+    start_index = content.index("Home") + 2
+    end_index = content.index("Maybe") - 1
+
+    return manual_page
 
 
 if __name__ == "__main__":
@@ -67,3 +74,4 @@ if __name__ == "__main__":
     end_index = content.index("Maybe") - 1
 
     content = content[start_index:end_index]
+    print(content)

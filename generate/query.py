@@ -15,78 +15,108 @@ OLLAMA_URL = os.getenv("OLLAMA_URL")
 OLLAMA_MODEL = "llama3"
 TOP_K = 5
 
-query = "what is VAT?"
+# query = "what is VAT?"
 
-query_embedding = embed(query)  # or API call
+# query_embedding = embed(query)  # or API call
 
-with psycopg.connect(db_cred) as conn:
-    with conn.cursor() as cur:
-        cur.execute("""
-        SELECT chunk_text, section_code, title, url
-        FROM manual_chunks
-        ORDER BY embedding <-> %s::vector
-        LIMIT %s;
-        """, (query_embedding, TOP_K))
+# with psycopg.connect(db_cred) as conn:
+#     with conn.cursor() as cur:
+#         cur.execute("""
+#         SELECT chunk_text, section_code, title, url
+#         FROM manual_chunks
+#         ORDER BY embedding <-> %s::vector
+#         LIMIT %s;
+#         """, (query_embedding, TOP_K))
 
-        results = cur.fetchall()
+#         results = cur.fetchall()
 
-retrieved_docs = []
+def db_connector(query_embedding, TOP_K):
+    with psycopg.connect(db_cred) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""
+            SELECT chunk_text, section_code, title, url
+            FROM manual_chunks
+            ORDER BY embedding <-> %s::vector
+            LIMIT %s;
+            """, (query_embedding, TOP_K))
 
-for row in results:
-    retrieved_docs.append({
-        "chunk_text": row[0],
-        "section_code": row[1],
-        "title": row[2],
-        "url": row[3]
-    })
+            results = cur.fetchall()
+    
+    return results
 
-context = "\n\n".join([
-    doc["chunk_text"]
-    for doc in retrieved_docs
-])
+def docs_retriver(results):
+    retrieved_docs = []
 
-baseline_prompt = f"""
-You are a UK tax assistant.
+    for row in results:
+        retrieved_docs.append({
+            "chunk_text": row[0],
+            "section_code": row[1],
+            "title": row[2],
+            "url": row[3]
+        })
+    
+    return retrieved_docs
 
-Use the following HMRC manual context to answer:
+# retrieved_docs = []
 
-{context}
+# for row in results:
+#     retrieved_docs.append({
+#         "chunk_text": row[0],
+#         "section_code": row[1],
+#         "title": row[2],
+#         "url": row[3]
+#     })
 
-Question: {query}
-"""
+# results = db_connector(query_embedding, TOP_K)
+# query_docs = docs_retriver(results)
 
-prompt = f"""
-You are a UK tax assistant.
+# context = "\n\n".join([
+#     doc["chunk_text"]
+#     for doc in query_docs
+# ])
 
-Answer only from the following retrieved HMRC manual context.
-If the context does not contain enough evidence, say you cannot determine the answer from the retrieved manual sections.
+# baseline_prompt = f"""
+# You are a UK tax assistant.
 
-{context}
+# Use the following HMRC manual context to answer:
 
-Question: {query}
-"""
+# {context}
+
+# Question: {query}
+# """
+
+# prompt = f"""
+# You are a UK tax assistant.
+
+# Answer only from the following retrieved HMRC manual context.
+# If the context does not contain enough evidence, say you cannot determine the answer from the retrieved manual sections.
+
+# {context}
+
+# Question: {query}
+# """
 
 
 
-response = requests.post(
-    OLLAMA_URL, # local machine
-    json={
-        "model": OLLAMA_MODEL,
-        "prompt": prompt,
-        "stream": False
-    }
-)
+# response = requests.post(
+#     OLLAMA_URL, # local machine
+#     json={
+#         "model": OLLAMA_MODEL,
+#         "prompt": prompt,
+#         "stream": False
+#     }
+# )
 
-answer = response.json()["response"]
+# answer = response.json()["response"]
 
-citations = []
+# citations = []
 
-for doc in retrieved_docs:
-    citations.append(
-        f"{doc['section_code']} - {doc['title']} - {doc['url']}"
-    )
+# for doc in query_docs:
+#     citations.append(
+#         f"{doc['section_code']} - {doc['title']} - {doc['url']}"
+#     )
 
-citations = list(set(citations))
+# citations = list(set(citations))
 
 
 # baseline_response = answer + "\n\nSources:\n"
@@ -105,8 +135,8 @@ citations = list(set(citations))
 
 # final_response += "\n" + format_hallucination_report(report)
 
-final_response = answer + "\n\nSources:\n"
+# final_response = answer + "\n\nSources:\n"
 
-for c in citations:
-    final_response += f"- {c}\n"
-print(f"Formatted response: {final_response}")
+# for c in citations:
+#     final_response += f"- {c}\n"
+# print(f"Formatted response: {final_response}")

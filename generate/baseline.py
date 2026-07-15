@@ -11,7 +11,7 @@ from generate.rag_model import call_ollama, docs_to_context
 def baseline_generate(
     query: str,
     retrieved_docs: List[Dict[str, Any]],
-    model: str = "mistral",
+    model: str = "llama3",
 ) -> str:
     context = docs_to_context(retrieved_docs)
 
